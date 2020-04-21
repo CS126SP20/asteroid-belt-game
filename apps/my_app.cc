@@ -11,7 +11,9 @@ namespace myapp {
 using cinder::app::KeyEvent;
 using namespace ci;
 
-MyApp::MyApp() { }
+MyApp::MyApp() :
+leaderboard_{cinder::app::getAssetPath("database.db").string()}
+{}
 
 void MyApp::setup() {
   for (int i = 0; i < 14; i++) {
@@ -20,6 +22,7 @@ void MyApp::setup() {
     int radius = 20;
     asteroid_list.push_back(asteroid::Asteroid(vec2(x + (i * 60), y), radius));
     ship.SetLocation(ship_start_location);
+    leaderboard_.AddNameAndScoreToLeaderBoard("amish", 2);
   }
 }
 

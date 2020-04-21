@@ -4,10 +4,12 @@
 #define FINALPROJECT_APPS_MYAPP_H_
 
 #include <cinder/app/App.h>
-#include "../src/Asteroid.h"
-#include "../src/Ship.h"
+
 #include <list>
 
+#include "../src/Asteroid.h"
+#include "../src/Leaderboard.h"
+#include "../src/Ship.h"
 
 namespace myapp {
 
@@ -22,7 +24,7 @@ class MyApp : public cinder::app::App {
   vec2 ship_start_location = vec2(getWindowWidth() / 2, 600);
   std::list<asteroid::Asteroid> asteroid_list;
   ship::Ship ship;
-
+  leaderboard::LeaderBoard leaderboard_;
 };
 
 }  // namespace myapp
