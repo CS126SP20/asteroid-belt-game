@@ -10,6 +10,11 @@
 #include "../src/Asteroid.h"
 #include "../src/Leaderboard.h"
 #include "../src/Ship.h"
+#include <cinder/Font.h>
+#include <cinder/Text.h>
+#include <chrono>
+#include <cinder/gl/draw.h>
+#include <cinder/gl/gl.h>
 
 namespace myapp {
 
@@ -32,6 +37,7 @@ class MyApp : public cinder::app::App {
   ship::Ship ship;
   leaderboard::LeaderBoard leaderboard_;
   bool checkCollision(vec2 loc, int radius);
+  std::string input = "";
 };
 
 }  // namespace myapp
