@@ -3,11 +3,12 @@
 //
 
 #include "Leaderboard.h"
+
 namespace leaderboard {
 
 LeaderBoard::LeaderBoard(const std::string& db_path) : db_{db_path} {
   db_ << "CREATE TABLE if not exists leaderboard (\n"
-         "  name  TEXT NOT NULL,\n"
+         "  name TEXT NOT NULL,\n"
          "  score INTEGER NOT NULL\n"
          ");";
 }

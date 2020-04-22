@@ -89,6 +89,20 @@ FetchContent_Declare(
         GIT_TAG v3.24.0
 )
 
+FetchContent_Declare(
+        gd-graphics
+        GIT_REPOSITORY https://github.com/libgd/libgd.git
+        GIT_TAG gd-2.3.0
+)
+
+FetchContent_GetProperties(gd-graphics)
+if (NOT gd-graphics_POPULATED)
+    FetchContent_Populate(gd-graphics)
+    add_library(gd-graphics INTERFACE)
+    target_include_directories(gd-graphics INTERFACE ${gd-graphics_SOURCE_DIR}/hdr)
+endif ()
+
+
 FetchContent_GetProperties(sqlite-modern-cpp)
 if (NOT sqlite-modern-cpp_POPULATED)
     FetchContent_Populate(sqlite-modern-cpp)

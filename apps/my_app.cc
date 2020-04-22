@@ -4,15 +4,15 @@
 #include "cinder/gl/gl.h"
 #include <cinder/app/App.h>
 
-
 namespace myapp {
 
 
 using cinder::app::KeyEvent;
 using namespace ci;
+const char kDbPath[] = "leaderboard.db";
 
 MyApp::MyApp() :
-leaderboard_{cinder::app::getAssetPath("database.db").string()}
+leaderboard_{cinder::app::getAssetPath(kDbPath).string()}
 {}
 
 void MyApp::setup() {
