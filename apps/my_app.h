@@ -13,6 +13,12 @@
 
 namespace myapp {
 
+enum class GameState {
+  kBeforePlaying,
+  kGameOver,
+  kPlaying,
+};
+
 class MyApp : public cinder::app::App {
  public:
   MyApp();
@@ -25,6 +31,7 @@ class MyApp : public cinder::app::App {
   std::list<asteroid::Asteroid> asteroid_list;
   ship::Ship ship;
   leaderboard::LeaderBoard leaderboard_;
+  bool checkCollision(vec2 loc, int radius);
 };
 
 }  // namespace myapp

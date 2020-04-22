@@ -23,7 +23,9 @@ class Asteroid {
   vec2 getLocation() {
     return location;
   }
-
+  int GetRadius() {
+    return radius;
+  }
 };
 
 } // namespace asteroid

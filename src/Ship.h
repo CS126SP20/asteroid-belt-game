@@ -24,6 +24,9 @@ class Ship {
   vec2 GetLocation() {
     return location;
   }
+  int GetRadius() {
+    return radius;
+  }
 
 };
 }
