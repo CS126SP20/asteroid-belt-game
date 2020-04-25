@@ -49,32 +49,33 @@ void MyApp::setup() {
 }
 
 void MyApp::update() {
-  for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
-    vec2 center = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
-    gl::clear();
-    p->update(vec2(p->getLocation().x, p->getLocation().y + 1), 1);
-  }
-  for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
-    if (checkCollision(p->getLocation(), p->GetRadius())) {
+  if (gameStart) {
+    for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
+      vec2 center = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
       gl::clear();
-      gameOver = true;
+      p->update(vec2(p->getLocation().x, p->getLocation().y + 1), 1);
+    }
+    for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
+      if (checkCollision(p->getLocation(), p->GetRadius())) {
+        gl::clear();
+      }
     }
   }
 }
 
 void MyApp::draw() {
-/*
+
   if (!(gameStart)) {
     gl::clear();
     const cinder::ivec2 size = {500, 50};
     vec2 loc = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
     const Color color = Color::white();
-    PrintText("Enter Your Name", color, size, loc);
+    PrintText("Click your space button to Travel through the Asteroid Belt", color, size, loc);
   }
-  */
+
     if (gameOver) {
       gl::clear();
-    } else {
+    } else if (gameStart) {
       for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
         p->draw();
       }
@@ -96,6 +97,9 @@ void MyApp::keyDown(KeyEvent event) {
   }
   if (event.getChar() == 'w') {
     ship.SetLocation(vec2(ship.GetLocation().x, ship.GetLocation().y - 5));
+  }
+  if (event.getCode() == KeyEvent::KEY_SPACE) {
+    gameStart = true;
   }
 }
 
