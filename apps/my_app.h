@@ -32,12 +32,13 @@ class MyApp : public cinder::app::App {
   void draw() override;
   void keyDown(cinder::app::KeyEvent) override;
  private:
-  vec2 ship_start_location = vec2(getWindowWidth() / 2, 600);
+  vec2 ship_start_location = vec2(getWindowWidth() / 2, 785);
   std::list<asteroid::Asteroid> asteroid_list;
   ship::Ship ship;
   leaderboard::LeaderBoard leaderboard_;
   bool checkCollision(vec2 loc, int radius);
   std::string input = "";
+  const std::string player_name_;
 };
 
 }  // namespace myapp

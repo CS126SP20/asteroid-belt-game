@@ -95,12 +95,24 @@ FetchContent_Declare(
         GIT_TAG gd-2.3.0
 )
 
+FetchContent_Declare(
+        gflags
+        GIT_REPOSITORY https://github.com/gflags/gflags.git
+        GIT_TAG v2.2.2
+)
+
 FetchContent_GetProperties(gd-graphics)
 if (NOT gd-graphics_POPULATED)
     FetchContent_Populate(gd-graphics)
     add_library(gd-graphics INTERFACE)
     target_include_directories(gd-graphics INTERFACE ${gd-graphics_SOURCE_DIR}/hdr)
 endif ()
+
+FetchContent_GetProperties(gflags)
+if(NOT gflags_POPULATED)
+    FetchContent_Populate(gflags)
+    add_subdirectory(${gflags_SOURCE_DIR} ${gflags_BINARY_DIR})
+endif()
 
 
 FetchContent_GetProperties(sqlite-modern-cpp)

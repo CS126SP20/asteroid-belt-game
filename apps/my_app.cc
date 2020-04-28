@@ -1,7 +1,10 @@
 // Copyright (c) 2020 [Your Name]. All rights reserved.
 
 #include "my_app.h"
+
 #include <cinder/app/App.h>
+#include <gflags/gflags_declare.h>
+
 #include <iostream>
 namespace myapp {
 
@@ -13,8 +16,11 @@ bool gameOver = false;
 bool gameStart = false;
 const char kNormalFont[] = "Arial";
 
+DECLARE_string(name);
+
 MyApp::MyApp() :
-leaderboard_{cinder::app::getAssetPath(kDbPath).string()}
+leaderboard_{cinder::app::getAssetPath(kDbPath).string()},
+player_name_{FLAGS_name}
 {}
 template <typename C>
 void PrintText(const std::string& text, const C& color, const cinder::ivec2& size,
@@ -42,22 +48,29 @@ void MyApp::setup() {
     int x = 40;
     int y = 20;
     int radius = 20;
-    asteroid_list.push_back(asteroid::Asteroid(vec2(x + (i * 60), y), radius));
+    int rand_height = rand() % 600 + 1;
+    asteroid_list.push_back(asteroid::Asteroid(vec2(x + (i * 60), rand_height), radius));
     ship.SetLocation(ship_start_location);
-    leaderboard_.AddNameAndScoreToLeaderBoard("amish", 2);
   }
+  leaderboard_.AddNameAndScoreToLeaderBoard(player_name_, 5);
+
+  std::cout << "height " << getWindowHeight();
+  std::cout << "width " << getWindowWidth();
+
 }
 
 void MyApp::update() {
-  if (gameStart) {
+  if (gameStart && !(gameOver)) {
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
       vec2 center = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
       gl::clear();
       p->update(vec2(p->getLocation().x, p->getLocation().y + 1), 1);
     }
+
+
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
       if (checkCollision(p->getLocation(), p->GetRadius())) {
-        gl::clear();
+        gameOver = true;
       }
     }
   }
@@ -65,23 +78,23 @@ void MyApp::update() {
 
 void MyApp::draw() {
 
-  if (!(gameStart)) {
+  if (!(gameStart) && !(gameOver)) {
     gl::clear();
     const cinder::ivec2 size = {500, 50};
     vec2 loc = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
     const Color color = Color::white();
     PrintText("Click your space button to Travel through the Asteroid Belt", color, size, loc);
   }
-
-    if (gameOver) {
-      gl::clear();
-    } else if (gameStart) {
-      for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
-        p->draw();
-      }
-      ship.draw();
+  if (gameOver && !(gameStart)) {
+    gl::clear();
+    return;
+  }
+  if (gameStart && !(gameOver)) {
+    for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
+      p->draw();
     }
-
+    ship.draw();
+  }
 }
 
 
