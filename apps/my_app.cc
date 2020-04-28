@@ -14,6 +14,7 @@ using namespace ci;
 const char kDbPath[] = "leaderboard.db";
 bool gameOver = false;
 bool gameStart = false;
+bool changeList = false;
 const char kNormalFont[] = "Arial";
 
 DECLARE_string(name);
@@ -53,14 +54,26 @@ void MyApp::setup() {
     ship.SetLocation(ship_start_location);
   }
   leaderboard_.AddNameAndScoreToLeaderBoard(player_name_, 5);
-
-  std::cout << "height " << getWindowHeight();
-  std::cout << "width " << getWindowWidth();
-
 }
 
 void MyApp::update() {
   if (gameStart && !(gameOver)) {
+    if (changeList) {
+      asteroid_list.clear();
+      for (int i = 0; i < 14; i++) {
+        int x = 40 + (i * 60);
+        int radius = 20;
+        int rand_height = rand() % 600 + 1;
+        if (checkCollision(vec2(x, rand_height), radius)) {
+          rand_height += 50;
+        }
+        asteroid_list.push_back(asteroid::Asteroid(vec2(x, rand_height), radius));
+      }
+      changeList = false;
+    }
+    if (highest_asteroid(asteroid_list) > 400) {
+      changeList = true;
+    }
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
       vec2 center = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
       gl::clear();
@@ -71,6 +84,7 @@ void MyApp::update() {
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
       if (checkCollision(p->getLocation(), p->GetRadius())) {
         gameOver = true;
+        gameStart = false;
       }
     }
   }
@@ -87,7 +101,6 @@ void MyApp::draw() {
   }
   if (gameOver && !(gameStart)) {
     gl::clear();
-    return;
   }
   if (gameStart && !(gameOver)) {
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
@@ -125,7 +138,15 @@ bool MyApp::checkCollision(vec2 loc, int radius) {
   return distance < ship_rad + radius;
 }
 
-
+int MyApp::highest_asteroid(std::list<asteroid::Asteroid> asteroids) {
+  int highest_height = 800;
+  for (std::list<asteroid::Asteroid>::iterator p = asteroids.begin(); p != asteroids.end(); ++p) {
+    if (p->getLocation().y < highest_height) {
+      highest_height = p->getLocation().y;
+    }
+  }
+  return highest_height;
+}
 
 }  // namespace myapp
 

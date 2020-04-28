@@ -39,6 +39,7 @@ class MyApp : public cinder::app::App {
   bool checkCollision(vec2 loc, int radius);
   std::string input = "";
   const std::string player_name_;
+  int highest_asteroid(std::list<asteroid::Asteroid> asteroids);
 };
 
 }  // namespace myapp

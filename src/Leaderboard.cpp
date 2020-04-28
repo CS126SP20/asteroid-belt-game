@@ -11,7 +11,6 @@ LeaderBoard::LeaderBoard(const std::string& db_path) : db_{db_path} {
          "  name TEXT NOT NULL,\n"
          "  score INTEGER NOT NULL\n"
          ");";
-  db_ << "DELETE FROM leaderboard";
 }
 
 void LeaderBoard::AddNameAndScoreToLeaderBoard(std::string name, int score) {
