@@ -16,6 +16,7 @@ bool gameOver = false;
 bool gameStart = false;
 bool changeList = false;
 const char kNormalFont[] = "Arial";
+int difficulty = 1;
 
 DECLARE_string(name);
 
@@ -71,13 +72,13 @@ void MyApp::update() {
       }
       changeList = false;
     }
-    if (highest_asteroid(asteroid_list) > 400) {
+    if (highest_asteroid(asteroid_list) == 800) {
       changeList = true;
     }
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
       vec2 center = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
       gl::clear();
-      p->update(vec2(p->getLocation().x, p->getLocation().y + 1), 1);
+      p->update(vec2(p->getLocation().x, p->getLocation().y + difficulty), 1);
     }
 
 
@@ -126,6 +127,15 @@ void MyApp::keyDown(KeyEvent event) {
   }
   if (event.getCode() == KeyEvent::KEY_SPACE) {
     gameStart = true;
+  }
+  if (event.getChar() == 'e') {
+    difficulty = 1;
+  }
+  if (event.getChar() == 'm') {
+    difficulty = 3;
+  }
+  if (event.getChar() == 'h') {
+    difficulty = 5;
   }
 }
 
