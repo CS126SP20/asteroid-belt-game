@@ -5,6 +5,8 @@
 #include <cinder/app/App.h>
 #include <gflags/gflags_declare.h>
 
+
+
 #include <iostream>
 namespace myapp {
 
@@ -15,7 +17,7 @@ const char kDbPath[] = "leaderboard.db";
 bool gameOver = false;
 bool gameStart = false;
 bool changeList = false;
-const char kNormalFont[] = "Arial";
+const char kNormalFont[] = "Times";
 int difficulty = 1;
 
 DECLARE_string(name);
@@ -31,7 +33,7 @@ void PrintText(const std::string& text, const C& color, const cinder::ivec2& siz
 
   auto box = TextBox()
       .alignment(TextBox::CENTER)
-      .font(cinder::Font(kNormalFont, 10))
+      .font(cinder::Font(kNormalFont, 20))
       .size(size)
       .color(color)
       .backgroundColor(ColorA(0, 0, 0, 0))
@@ -94,16 +96,35 @@ void MyApp::update() {
 void MyApp::draw() {
 
   if (!(gameStart) && !(gameOver)) {
+    myImage = gl::Texture2d::create(loadImage(loadAsset("starbackground.jpg")));
     gl::clear();
+    gl::draw(myImage, getWindowBounds());
     const cinder::ivec2 size = {500, 50};
     vec2 loc = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
     const Color color = Color::white();
-    PrintText("Click your space button to Travel through the Asteroid Belt", color, size, loc);
+    PrintText("Click space to continue...", color, size, loc);
+    PrintText("Travel Through the Asteroid Belt!", color, size, vec2(getWindowWidth() / 2, 100));
+    PrintText("Press 'e', 'm', or 'h' to set your difficulty to easy, medium, or hard!!!", color, size, vec2(getWindowWidth() / 2, 500));
   }
   if (gameOver && !(gameStart)) {
     gl::clear();
+    gl::disableDepthRead();
+    gl::disableDepthRead();
+    gl::enableAlphaBlending();
+    gl::color(Color::white());
+    gl::draw(myImage, getWindowBounds());
+    const cinder::ivec2 size = {500, 50};
+    vec2 loc = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
+    const Color color = Color::white();
+    PrintText("You Lost!", color, size, loc);
   }
   if (gameStart && !(gameOver)) {
+    gl::clear();
+    gl::disableDepthRead();
+    gl::disableDepthRead();
+    gl::enableAlphaBlending();
+    gl::color(Color::white());
+    gl::draw(myImage, getWindowBounds());
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
       p->draw();
     }
@@ -129,7 +150,7 @@ void MyApp::keyDown(KeyEvent event) {
     gameStart = true;
   }
   if (event.getChar() == 'e') {
-    difficulty = 1;
+    difficulty = 2;
   }
   if (event.getChar() == 'm') {
     difficulty = 3;

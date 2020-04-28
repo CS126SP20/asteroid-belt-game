@@ -15,6 +15,8 @@
 #include <chrono>
 #include <cinder/gl/draw.h>
 #include <cinder/gl/gl.h>
+#include "cinder/ImageIo.h"
+#include "cinder/gl/Texture.h"
 
 namespace myapp {
 
@@ -40,6 +42,7 @@ class MyApp : public cinder::app::App {
   std::string input = "";
   const std::string player_name_;
   int highest_asteroid(std::list<asteroid::Asteroid> asteroids);
+  gl::Texture2dRef myImage;
 };
 
 }  // namespace myapp
