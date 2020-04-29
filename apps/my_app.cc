@@ -56,7 +56,6 @@ void MyApp::setup() {
     asteroid_list.push_back(asteroid::Asteroid(vec2(x + (i * 60), rand_height), radius));
     ship.SetLocation(ship_start_location);
   }
-  leaderboard_.AddNameAndScoreToLeaderBoard(player_name_, 5);
 }
 
 void MyApp::update() {
@@ -86,6 +85,9 @@ void MyApp::update() {
 
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
       if (checkCollision(p->getLocation(), p->GetRadius())) {
+        timer.stop();
+        leaderboard_.AddNameAndScoreToLeaderBoard(player_name_, calculate_score((int) timer.getSeconds(), difficulty));
+        std::cout << calculate_score((int) timer.getSeconds(), difficulty);
         gameOver = true;
         gameStart = false;
       }
@@ -117,6 +119,8 @@ void MyApp::draw() {
     vec2 loc = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
     const Color color = Color::white();
     PrintText("You Lost!", color, size, loc);
+    std::string text = "Highest Score: " + std::to_string(leaderboard_.highest_score());
+    PrintText(text, color, size, vec2(getWindowWidth() / 2, 300));
   }
   if (gameStart && !(gameOver)) {
     gl::clear();
@@ -148,6 +152,7 @@ void MyApp::keyDown(KeyEvent event) {
   }
   if (event.getCode() == KeyEvent::KEY_SPACE) {
     gameStart = true;
+    timer.start();
   }
   if (event.getChar() == 'e') {
     difficulty = 2;
@@ -177,6 +182,10 @@ int MyApp::highest_asteroid(std::list<asteroid::Asteroid> asteroids) {
     }
   }
   return highest_height;
+}
+
+int MyApp::calculate_score(int elapsed_seconds, int difficulty) {
+  return elapsed_seconds * difficulty;
 }
 
 }  // namespace myapp

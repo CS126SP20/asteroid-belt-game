@@ -19,12 +19,7 @@
 #include "cinder/gl/Texture.h"
 
 namespace myapp {
-
-enum class GameState {
-  kBeforePlaying,
-  kGameOver,
-  kPlaying,
-};
+using cinder::Timer;
 
 class MyApp : public cinder::app::App {
  public:
@@ -43,6 +38,8 @@ class MyApp : public cinder::app::App {
   const std::string player_name_;
   int highest_asteroid(std::list<asteroid::Asteroid> asteroids);
   gl::Texture2dRef myImage;
+  cinder::Timer timer;
+  int calculate_score(int elapsed_seconds, int difficulty);
 };
 
 }  // namespace myapp

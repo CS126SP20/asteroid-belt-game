@@ -11,6 +11,7 @@ class LeaderBoard {
  public:
   explicit LeaderBoard(const std::string& db_path);
   void AddNameAndScoreToLeaderBoard(std::string name, int score);
+  int highest_score();
 
  private:
   sqlite::database db_;

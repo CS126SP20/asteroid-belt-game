@@ -19,5 +19,12 @@ void LeaderBoard::AddNameAndScoreToLeaderBoard(std::string name, int score) {
       << score;
 }
 
+int LeaderBoard::highest_score() {
+  auto highest = db_ << "SELECT MAX(score) FROM leaderboard";
+  int highestScore;
+  highest >> highestScore;
+  return highestScore;
+}
+
 
 }
