@@ -14,6 +14,7 @@ class Ship {
  private:
   vec2 location;
   int radius = 5;
+  gl::Texture2dRef shipImage;
  public:
 
   void update(vec2 dir);

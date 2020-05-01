@@ -55,6 +55,7 @@ void MyApp::setup() {
     int rand_height = rand() % 600 + 1;
     asteroid_list.push_back(asteroid::Asteroid(vec2(x + (i * 60), rand_height), radius));
     ship.SetLocation(ship_start_location);
+
   }
 }
 
