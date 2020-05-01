@@ -17,11 +17,13 @@
 #include <cinder/gl/gl.h>
 #include "cinder/ImageIo.h"
 #include "cinder/gl/Texture.h"
+#include "cinder/Area.h"
 
 namespace myapp {
 using cinder::Timer;
 
 class MyApp : public cinder::app::App {
+
  public:
   MyApp();
   void setup() override;
@@ -29,11 +31,11 @@ class MyApp : public cinder::app::App {
   void draw() override;
   void keyDown(cinder::app::KeyEvent) override;
  private:
-  vec2 ship_start_location = vec2(getWindowWidth() / 2, 750);
+  vec2 ship_start_location = vec2(getWindowWidth() / 2, 700);
   std::list<asteroid::Asteroid> asteroid_list;
   ship::Ship ship;
   leaderboard::LeaderBoard leaderboard_;
-  bool checkCollision(vec2 loc, int radius);
+  bool checkCollision(vec2 loc);
   std::string input = "";
   const std::string player_name_;
   int highest_asteroid(std::list<asteroid::Asteroid> asteroids);

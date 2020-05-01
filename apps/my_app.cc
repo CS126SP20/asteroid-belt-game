@@ -55,8 +55,8 @@ void MyApp::setup() {
     int rand_height = rand() % 600 + 1;
     asteroid_list.push_back(asteroid::Asteroid(vec2(x + (i * 60), rand_height), radius));
     ship.SetLocation(ship_start_location);
-
   }
+
 }
 
 void MyApp::update() {
@@ -67,9 +67,10 @@ void MyApp::update() {
         int x = 40 + (i * 60);
         int radius = 20;
         int rand_height = rand() % 600 + 1;
+        /*
         if (checkCollision(vec2(x, rand_height), radius)) {
           rand_height += 50;
-        }
+        }*/
         asteroid_list.push_back(asteroid::Asteroid(vec2(x, rand_height), radius));
       }
       changeList = false;
@@ -85,10 +86,10 @@ void MyApp::update() {
 
 
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
-      if (checkCollision(p->getLocation(), p->GetRadius())) {
+
+      if (checkCollision(p->getLocation())) {
         timer.stop();
         leaderboard_.AddNameAndScoreToLeaderBoard(player_name_, calculate_score((int) timer.getSeconds(), difficulty));
-        std::cout << calculate_score((int) timer.getSeconds(), difficulty);
         gameOver = true;
         gameStart = false;
       }
@@ -108,6 +109,9 @@ void MyApp::draw() {
     PrintText("Click space to continue...", color, size, loc);
     PrintText("Travel Through the Asteroid Belt!", color, size, vec2(getWindowWidth() / 2, 100));
     PrintText("Press 'e', 'm', or 'h' to set your difficulty to easy, medium, or hard!!!", color, size, vec2(getWindowWidth() / 2, 500));
+    gl::Texture2dRef asteroid = gl::Texture2d::create(loadImage(cinder::app::loadAsset("asteroid3.png")));
+
+
   }
   if (gameOver && !(gameStart)) {
     gl::clear();
@@ -134,6 +138,10 @@ void MyApp::draw() {
       p->draw();
     }
     ship.draw();
+
+
+
+
   }
 }
 
@@ -166,13 +174,44 @@ void MyApp::keyDown(KeyEvent event) {
   }
 }
 
-bool MyApp::checkCollision(vec2 loc, int radius) {
-  vec2 ship_location = ship.GetLocation();
-  int ship_rad = ship.GetRadius();
-  float dx = ship_location.x - loc.x;
-  float dy = ship_location.y - loc.y;
-  float distance = sqrt(dx * dx + dy * dy);
-  return distance < ship_rad + radius;
+bool MyApp::checkCollision(vec2 loc) {
+
+  // Top left first rectangle
+  int x1 = ship.GetLocation().x;
+  int y1 = ship.GetLocation().y;
+
+  // Bottom right first rectangle
+  int x2 = ship.GetLocation().x + 20;
+  int y2 = ship.GetLocation().y + 35;
+
+
+
+
+  // Top left second rectangle
+  int xx1 = loc.x;
+  int yy1 = loc.y;
+
+  // Bottom right second rectangle
+  int xx2 = loc.x + 63;
+  int yy2 = loc.y + 51;
+
+  if ((x1 < xx2) && (x2 > xx1) && (y1 < yy2) && (y2 > yy1)) {
+    return true;
+  } else {
+    return false;
+  }
+
+
+  /*
+  if (x1 >= xx2 || xx1 >= x2) {
+    return false;
+  }
+
+  if (y1 <= yy2 || yy1 <= y2) {
+    return false;
+  }
+  return true;
+*/
 }
 
 int MyApp::highest_asteroid(std::list<asteroid::Asteroid> asteroids) {

@@ -13,7 +13,7 @@ class Asteroid {
  private:
   vec2 location;
   int radius;
-  gl::Texture2dRef asteroidImage;
+  gl::Texture2dRef asteroidImage = gl::Texture2d::create(loadImage(cinder::app::loadAsset("asteroid3.png")));
  public:
   Asteroid(vec2 loc, int rad) {
     location = loc;
@@ -27,6 +27,10 @@ class Asteroid {
   int GetRadius() {
     return radius;
   }
+  gl::Texture2dRef GetImage() {
+    return asteroidImage;
+  }
+
 };
 
 } // namespace asteroid

@@ -11,7 +11,6 @@ void Ship::update(vec2 dir) {
 
 void Ship::draw() {
   gl::color(Color::white());
-  shipImage = gl::Texture2d::create(loadImage(cinder::app::loadAsset("spaceship2.png")));
   gl::draw(shipImage, location);
 }
 }

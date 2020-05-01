@@ -14,7 +14,8 @@ class Ship {
  private:
   vec2 location;
   int radius = 5;
-  gl::Texture2dRef shipImage;
+  gl::Texture2dRef shipImage = gl::Texture2d::create(loadImage(cinder::app::loadAsset("spaceship2.png")));
+
  public:
 
   void update(vec2 dir);
@@ -27,6 +28,9 @@ class Ship {
   }
   int GetRadius() {
     return radius;
+  }
+  gl::Texture2dRef GetImage() {
+    return shipImage;
   }
 
 };

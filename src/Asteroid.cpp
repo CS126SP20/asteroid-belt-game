@@ -9,7 +9,6 @@ void Asteroid::update(vec2 dir, float speed) {
 }
 void Asteroid::draw() {
   gl::color(Color::white());
-  asteroidImage = gl::Texture2d::create(loadImage(cinder::app::loadAsset("asteroid3.png")));
   gl::draw(asteroidImage, location);
 }
 }
