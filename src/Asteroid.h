@@ -13,6 +13,7 @@ class Asteroid {
  private:
   vec2 location;
   int radius;
+  gl::Texture2dRef asteroidImage;
  public:
   Asteroid(vec2 loc, int rad) {
     location = loc;
