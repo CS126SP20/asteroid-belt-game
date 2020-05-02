@@ -30,4 +30,10 @@
  - Added a game over screen that displays the highest score from the database
  - Added user functionality so that they can choose which difficulty they are playing on
  
- 
+  **4/29/20:** 
+  - Added clipart to asteroids and the spaceship
+
+  **4/30/20:** 
+  - Created a more accurate collision detecting method using rectangles
+
+

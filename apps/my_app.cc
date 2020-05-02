@@ -17,7 +17,10 @@ const char kDbPath[] = "leaderboard.db";
 bool gameOver = false;
 bool gameStart = false;
 bool changeList = false;
-const char kNormalFont[] = "Times";
+bool showRules = false;
+bool showHomeScreen = false;
+const char kNormalFont[] = "Impact";
+const char timesFont[] = "Times";
 int difficulty = 1;
 
 DECLARE_string(name);
@@ -33,7 +36,7 @@ void PrintText(const std::string& text, const C& color, const cinder::ivec2& siz
 
   auto box = TextBox()
       .alignment(TextBox::CENTER)
-      .font(cinder::Font(kNormalFont, 20))
+      .font(cinder::Font(kNormalFont, 40))
       .size(size)
       .color(color)
       .backgroundColor(ColorA(0, 0, 0, 0))
@@ -99,20 +102,97 @@ void MyApp::update() {
 
 void MyApp::draw() {
 
-  if (!(gameStart) && !(gameOver)) {
+  if ((showHomeScreen) || (!(gameStart) && !(gameOver))) {
     myImage = gl::Texture2d::create(loadImage(loadAsset("starbackground.jpg")));
     gl::clear();
     gl::draw(myImage, getWindowBounds());
-    const cinder::ivec2 size = {500, 50};
+    gl::Texture2dRef space_ship = gl::Texture2d::create(loadImage(loadAsset("spaceship4.png")));
+    gl::draw(space_ship, vec2(300, 200));
+    const cinder::ivec2 size = {600, 50};
     vec2 loc = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
     const Color color = Color::white();
-    PrintText("Click space to continue...", color, size, loc);
+    // PrintText("Click space to continue...", color, size, loc);
     PrintText("Travel Through the Asteroid Belt!", color, size, vec2(getWindowWidth() / 2, 100));
-    PrintText("Press 'e', 'm', or 'h' to set your difficulty to easy, medium, or hard!!!", color, size, vec2(getWindowWidth() / 2, 500));
+    // PrintText("Press 'e', 'm', or 'h' to set your difficulty to easy, medium, or hard!!!", color, size, vec2(getWindowWidth() / 2, 500));
     gl::Texture2dRef asteroid = gl::Texture2d::create(loadImage(cinder::app::loadAsset("asteroid3.png")));
+    auto box = TextBox()
+        .alignment(TextBox::CENTER)
+        .font(cinder::Font(kNormalFont, 30))
+        .size(size)
+        .color(color)
+        .backgroundColor(ColorA(0, 0, 0, 0))
+        .text("Click space to continue...");
+    const auto box_size = box.getSize();
+    const auto surface = box.render();
+    const auto texture = cinder::gl::Texture::create(surface);
+    cinder::gl::draw(texture, vec2(100, 600));
+    gl::Texture2dRef asteroidclip  = gl::Texture2d::create(loadImage(cinder::app::loadAsset("asteroidclip2.png")));
+    gl::draw(asteroidclip, vec2(530, 240));
+    gl::Texture2dRef asteroid5  = gl::Texture2d::create(loadImage(cinder::app::loadAsset("asteroid5.png")));
+    gl::draw(asteroid5, vec2(20, 270));
+
+    auto boxy = TextBox()
+        .alignment(TextBox::CENTER)
+        .font(cinder::Font(kNormalFont, 15))
+        .size(size)
+        .color(color)
+        .backgroundColor(ColorA(0, 0, 0, 0))
+        .text("Press r for the game rules!");
+    const auto box_sizes = boxy.getSize();
+    const auto surfaces = boxy.render();
+    const auto textures = cinder::gl::Texture::create(surfaces);
+    cinder::gl::draw(textures, vec2(100, 700));
 
 
   }
+
+  if (showRules) {
+    gl::clear();
+    gl::draw(myImage, getWindowBounds());
+    auto boxy = TextBox()
+        .alignment(TextBox::CENTER)
+        .font(cinder::Font(timesFont, 40))
+        .size({600, 50})
+        .color(Color::white())
+        .backgroundColor(ColorA(0, 0, 0, 0))
+        .text("Rules:");
+    const auto box_sizes = boxy.getSize();
+    const auto surfaces = boxy.render();
+    const auto textures = cinder::gl::Texture::create(surfaces);
+    cinder::gl::draw(textures, vec2(100, 100));
+
+    auto box = TextBox()
+        .alignment(TextBox::CENTER)
+        .font(cinder::Font(timesFont, 20))
+        .size({600, 100})
+        .color(Color::white())
+        .backgroundColor(ColorA(0, 0, 0, 0))
+        .text("- 'W,A,S,D' to move \n"
+              "\n"
+              "- 'E, M, or H to toggle between the easy, medium, or hard difficulties \n"
+              "\n"
+              "- Avoid the asteroids to survive and higher your score");
+    const auto box_size = box.getSize();
+    const auto surface = box.render();
+    const auto texture = cinder::gl::Texture::create(surface);
+    cinder::gl::draw(texture, vec2(100, 300));
+
+    auto box1 = TextBox()
+        .alignment(TextBox::CENTER)
+        .font(cinder::Font(timesFont, 20))
+        .size({600, 50})
+        .color(Color::white())
+        .backgroundColor(ColorA(0, 0, 0, 0))
+        .text("Press space to start!");
+    const auto box_size1 = box1.getSize();
+    const auto surface1 = box1.render();
+    const auto texture1 = cinder::gl::Texture::create(surface1);
+    cinder::gl::draw(texture1, vec2(100, 700));
+
+
+  }
+
+
   if (gameOver && !(gameStart)) {
     gl::clear();
     gl::disableDepthRead();
@@ -123,9 +203,11 @@ void MyApp::draw() {
     const cinder::ivec2 size = {500, 50};
     vec2 loc = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
     const Color color = Color::white();
-    PrintText("You Lost!", color, size, loc);
+    //PrintText("You Lost!", color, size, loc);
     std::string text = "Highest Score: " + std::to_string(leaderboard_.highest_score());
     PrintText(text, color, size, vec2(getWindowWidth() / 2, 300));
+    gl::Texture2dRef gameoverscreen  = gl::Texture2d::create(loadImage(cinder::app::loadAsset("gameoverscreenv2.png")));
+    gl::draw(gameoverscreen, vec2(150, 50));
   }
   if (gameStart && !(gameOver)) {
     gl::clear();
@@ -148,21 +230,22 @@ void MyApp::draw() {
 
 void MyApp::keyDown(KeyEvent event) {
   if (event.getChar() == 'd') {
-    ship.SetLocation(vec2(ship.GetLocation().x + 5, ship.GetLocation().y));
+    ship.SetLocation(vec2(ship.GetLocation().x + 8, ship.GetLocation().y));
   }
   if (event.getChar() == 'a') {
-    ship.SetLocation(vec2(ship.GetLocation().x - 5, ship.GetLocation().y));
+    ship.SetLocation(vec2(ship.GetLocation().x - 8, ship.GetLocation().y));
   }
   if (event.getChar() == 's') {
-    ship.SetLocation(vec2(ship.GetLocation().x, ship.GetLocation().y + 5));
+    ship.SetLocation(vec2(ship.GetLocation().x, ship.GetLocation().y + 8));
   }
   if (event.getChar() == 'w') {
-    ship.SetLocation(vec2(ship.GetLocation().x, ship.GetLocation().y - 5));
+    ship.SetLocation(vec2(ship.GetLocation().x, ship.GetLocation().y - 8));
   }
   if (event.getCode() == KeyEvent::KEY_SPACE) {
     gameStart = true;
     timer.start();
   }
+
   if (event.getChar() == 'e') {
     difficulty = 2;
   }
@@ -171,6 +254,12 @@ void MyApp::keyDown(KeyEvent event) {
   }
   if (event.getChar() == 'h') {
     difficulty = 5;
+  }
+  if (event.getChar() == 'r') {
+    showRules = true;
+  }
+  if (event.getChar() == 'b') {
+    showHomeScreen = true;
   }
 }
 
@@ -201,17 +290,6 @@ bool MyApp::checkCollision(vec2 loc) {
     return false;
   }
 
-
-  /*
-  if (x1 >= xx2 || xx1 >= x2) {
-    return false;
-  }
-
-  if (y1 <= yy2 || yy1 <= y2) {
-    return false;
-  }
-  return true;
-*/
 }
 
 int MyApp::highest_asteroid(std::list<asteroid::Asteroid> asteroids) {

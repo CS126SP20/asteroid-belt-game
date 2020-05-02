@@ -18,6 +18,7 @@
 #include "cinder/ImageIo.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/Area.h"
+#include "cinder/gl/TextureFont.h"
 
 namespace myapp {
 using cinder::Timer;
