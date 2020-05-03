@@ -58,6 +58,10 @@ void MyApp::setup() {
     int rand_height = rand() % 600 + 1;
     asteroid_list.push_back(asteroid::Asteroid(vec2(x + (i * 60), rand_height), radius));
     ship.SetLocation(ship_start_location);
+    Url url = Url("https://www.1001fonts.com/cursive-fonts.html", false);
+    // DataSourceRef dataSource = DataSource("assets/Precious.ttf", url);
+
+    // Font cursive = Font(fontcurs, 10);
   }
 
 }
@@ -221,8 +225,20 @@ void MyApp::draw() {
     }
     ship.draw();
 
-
-
+    std::string elapsed_timer = std::to_string((int) getElapsedSeconds());
+    std::string score = std::to_string(calculate_score(getElapsedSeconds(), difficulty));
+    auto boxy = TextBox()
+        .alignment(TextBox::CENTER)
+        .font(cinder::Font(timesFont, 20))
+        .size({600, 50})
+        .color(Color::white())
+        .backgroundColor(ColorA(0, 0, 0, 0))
+        .text("Elapsed Seconds: " + elapsed_timer + "\n"
+                                                    "Score: " + score);
+    const auto box_sizes = boxy.getSize();
+    const auto surfaces = boxy.render();
+    const auto textures = cinder::gl::Texture::create(surfaces);
+    cinder::gl::draw(textures, vec2(400, 50));
 
   }
 }
@@ -303,7 +319,7 @@ int MyApp::highest_asteroid(std::list<asteroid::Asteroid> asteroids) {
 }
 
 int MyApp::calculate_score(int elapsed_seconds, int difficulty) {
-  return elapsed_seconds * difficulty;
+  return elapsed_seconds * 1.5 * difficulty;
 }
 
 }  // namespace myapp
