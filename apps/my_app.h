@@ -54,7 +54,7 @@ struct Line {
   std::string input = "";
   const std::string player_name_;
   int highest_asteroid(std::list<asteroid::Asteroid> asteroids);
-  gl::Texture2dRef myImage;
+  gl::Texture2dRef background;
   cinder::Timer timer;
   int score = 1;
   int asteroid_counter = 0;
@@ -68,6 +68,7 @@ struct Line {
   int laser_x_start_point = 50;
   int laser_y_start_point = 70;
   int random_height_range = 600;
+  int window_height = 800;
   GameState state_;
   cinder::audio::VoiceRef mVoice;
   int calculate_score(int elapsed_seconds, int difficulty);
@@ -81,6 +82,7 @@ struct Line {
       int font_size, ColorA color, std::string text, vec2 location);
   void PopulateLaserList();
   void PopulateAsteroidList();
+
 };
 
 }  // namespace myapp
