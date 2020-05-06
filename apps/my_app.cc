@@ -41,13 +41,15 @@ void MyApp::update() {
   if (state_ == GameState::kPlaying) {
     // Repopulates asteroid and laser lists after they go off the screen
     if (changeList) {
+      asteroid_counter++;
+      laser_counter++;
       asteroid_list.clear();
       PopulateAsteroidList();
       laser_list.clear();
       PopulateLaserList();
       changeList = false;
     }
-    if (highest_asteroid(asteroid_list) == window_height) {
+    if (HighestAsteroid(asteroid_list) == window_height) {
       changeList = true;
     }
     // Updates asteroid movement
@@ -57,8 +59,8 @@ void MyApp::update() {
     }
     // Checks for collisions among asteroids and spaceship
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
-      if (checkCollision(p->getLocation())) {
-        score = calculate_score((int) timer.getSeconds(), difficulty);
+      if (CheckCollision(p->getLocation())) {
+        score = CalculateScore((int) timer.getSeconds(), difficulty);
         leaderboard_.AddNameAndScoreToLeaderBoard(player_name_, score);
         timer.stop();
         state_ = GameState::kGameOver;
@@ -83,8 +85,8 @@ void MyApp::update() {
     }
     // Checks for collisions among lasers and spaceship
     for (std::list<laser::Laser>::iterator p = laser_list.begin(); p != laser_list.end(); ++p) {
-      if (checkLaserColision(p->GetTopPoint(), p->GetBottomPoint())) {
-        score = calculate_score((int) timer.getSeconds(), difficulty);
+      if (CheckLaserColision(p->GetTopPoint(), p->GetBottomPoint())) {
+        score = CalculateScore((int) timer.getSeconds(), difficulty);
         leaderboard_.AddNameAndScoreToLeaderBoard(player_name_, score);
         timer.stop();
         state_ = GameState::kGameOver;
@@ -192,7 +194,7 @@ void MyApp::draw() {
     ship.draw();
     // Calculates real time elapsed seconds and score
     std::string elapsed_timer = std::to_string((int) timer.getSeconds());
-    std::string score = std::to_string(calculate_score(timer.getSeconds() , difficulty));
+    std::string score = std::to_string(CalculateScore(timer.getSeconds() , difficulty));
     std::string text = "Elapsed Seconds: " + elapsed_timer + "\n" "Score: " + score;
     DisplayText(papyrus, 600, 60, 20, Color::white(),
         text, vec2(400, 30));
@@ -235,7 +237,7 @@ void MyApp::keyDown(KeyEvent event) {
 }
 // The check collision method was inspired by :
 // https://stackoverflow.com/questions/31022269/collision-detection-between-two-rectangles-in-java
-bool MyApp::checkCollision(vec2 loc) {
+bool MyApp::CheckCollision(vec2 loc) {
   // Top left first rectangle
   float x1 = ship.GetLocation().x;
   float y1 = ship.GetLocation().y;
@@ -251,7 +253,7 @@ bool MyApp::checkCollision(vec2 loc) {
   return (x1 < xx2) && (x2 > xx1) && (y1 < yy2) && (y2 > yy1);
 }
 // Returns the height of the highest asteroid on the screen.
-int MyApp::highest_asteroid(std::list<asteroid::Asteroid> asteroids) {
+int MyApp::HighestAsteroid(std::list<asteroid::Asteroid> asteroids) {
   int highest_height = 800;
   for (std::list<asteroid::Asteroid>::iterator p = asteroids.begin(); p != asteroids.end(); ++p) {
     if (p->getLocation().y < highest_height) {
@@ -261,7 +263,7 @@ int MyApp::highest_asteroid(std::list<asteroid::Asteroid> asteroids) {
   return highest_height;
 }
 // Calculates the current score of the user
-int MyApp::calculate_score(int elapsed_seconds, int difficulty) {
+int MyApp::CalculateScore(int elapsed_seconds, int difficulty) {
   return elapsed_seconds * 1.5 * difficulty;
 }
 // Prints text.
@@ -279,23 +281,23 @@ void MyApp::DisplayText(const char font[], int textbox_width, int textbox_height
   cinder::gl::draw(texture, location);
 }
 // Checks for a collision between a laser and the spaceship.
-bool MyApp::checkLaserColision(vec2 top_location, vec2 bottom_location) {
+bool MyApp::CheckLaserColision(vec2 top_location, vec2 bottom_location) {
   Line laser_line = {{top_location.x, top_location.y}, {bottom_location.x, bottom_location.y}};
   vec2 loc = ship.GetLocation();
   Line ship_left_line = {{loc.x, loc.y}, {loc.x, loc.y + 35}};
   Line ship_right_line = {{loc.x + 20, loc.y}, {loc.x + 20, loc.y + 35}};
   Line ship_top_line = {{loc.x, loc.y}, {loc.x + 20, loc.y}};
   Line ship_bottom_line = {{loc.x, loc.y + 35}, {loc.x + 20, loc.y + 35}};
-  if (linesIntersect(laser_line, ship_left_line)) {
+  if (LinesIntersect(laser_line, ship_left_line)) {
     return true;
   }
-  if (linesIntersect(laser_line, ship_right_line)) {
+  if (LinesIntersect(laser_line, ship_right_line)) {
     return true;
   }
-  if (linesIntersect(laser_line, ship_top_line)) {
+  if (LinesIntersect(laser_line, ship_top_line)) {
     return true;
   }
-  if (linesIntersect(laser_line, ship_bottom_line)) {
+  if (LinesIntersect(laser_line, ship_bottom_line)) {
     return true;
   }
   return false;
@@ -330,13 +332,8 @@ void MyApp::PopulateAsteroidList() {
 }
 // The code below is derived from:
 // https://www.tutorialspoint.com/Check-if-two-line-segments-intersect
-// Returns whether a point is on a line.
-bool MyApp::onLine(Line l1, Point p) {
-  return p.x <= max(l1.p1.x, l1.p2.x) && p.x <= min(l1.p1.x, l1.p2.x) &&
-         (p.y <= max(l1.p1.y, l1.p2.y) && p.y <= min(l1.p1.y, l1.p2.y));
-}
 // Returns the orientation of the 2 lines.
-int MyApp::direction(Point a, Point b, Point c) {
+int MyApp::Direction(Point a, Point b, Point c) {
   float val = (b.y-a.y)*(c.x-b.x)-(b.x-a.x)*(c.y-b.y);
   if (val == 0)
     return 0;     //colinear
@@ -345,12 +342,12 @@ int MyApp::direction(Point a, Point b, Point c) {
   return 1;    //clockwise direction
 }
 // Checks whether 2 lines are intersecting.
-bool MyApp::linesIntersect(Line l1, Line l2) {
+bool MyApp::LinesIntersect(Line l1, Line l2) {
   // Four direction for two lines and points of other line
-  int dir1 = direction(l1.p1, l1.p2, l2.p1);
-  int dir2 = direction(l1.p1, l1.p2, l2.p2);
-  int dir3 = direction(l2.p1, l2.p2, l1.p1);
-  int dir4 = direction(l2.p1, l2.p2, l1.p2);
+  int dir1 = Direction(l1.p1, l1.p2, l2.p1);
+  int dir2 = Direction(l1.p1, l1.p2, l2.p2);
+  int dir3 = Direction(l2.p1, l2.p2, l1.p1);
+  int dir4 = Direction(l2.p1, l2.p2, l1.p2);
 
   if(dir1 != dir2 && dir3 != dir4)
     return true; // They are intersecting

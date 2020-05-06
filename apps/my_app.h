@@ -50,10 +50,8 @@ struct Line {
   std::list<laser::Laser> laser_list;
   ship::Ship ship;
   leaderboard::LeaderBoard leaderboard_;
-  bool checkCollision(vec2 loc);
   std::string input = "";
   const std::string player_name_;
-  int highest_asteroid(std::list<asteroid::Asteroid> asteroids);
   gl::Texture2dRef background;
   cinder::Timer timer;
   int score = 1;
@@ -71,17 +69,20 @@ struct Line {
   int window_height = 800;
   GameState state_;
   cinder::audio::VoiceRef mVoice;
-  int calculate_score(int elapsed_seconds, int difficulty);
-  bool checkLaserColision(vec2 top_location, vec2 bottom_location);
+  int CalculateScore(int elapsed_seconds, int difficulty);
+  bool CheckLaserColision(vec2 top_location, vec2 bottom_location);
   // The functions below are derived from:
   // https://www.tutorialspoint.com/Check-if-two-line-segments-intersect
-  bool linesIntersect(Line l1, Line l2);
-  bool onLine(Line one, Point p);
-  int direction(Point a, Point b, Point c);
+  bool LinesIntersect(Line l1, Line l2);
+  int Direction(Point a, Point b, Point c);
   void DisplayText(const char font[], int textbox_width, int textbox_height,
       int font_size, ColorA color, std::string text, vec2 location);
   void PopulateLaserList();
   void PopulateAsteroidList();
+  bool CheckCollision(vec2 loc);
+  int HighestAsteroid(std::list<asteroid::Asteroid> asteroids);
+
+
 
 };
 
