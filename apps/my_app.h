@@ -58,6 +58,7 @@ struct Line {
   cinder::Timer timer;
   int score = 1;
   int asteroid_counter = 0;
+  int asteroid_spacing = 60;
   int laser_counter = 0;
   int asteroid_width = 40;
   int asteroid_radius = 20;
@@ -78,6 +79,8 @@ struct Line {
   int direction(Point a, Point b, Point c);
   void DisplayText(const char font[], int textbox_width, int textbox_height,
       int font_size, ColorA color, std::string text, vec2 location);
+  void PopulateLaserList();
+  void PopulateAsteroidList();
 };
 
 }  // namespace myapp

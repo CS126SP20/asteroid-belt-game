@@ -18,6 +18,7 @@ const char kDbPath[] = "leaderboard.db";
 const char kNormalFont[] = "Impact";
 const char timesFont[] = "Times";
 const char papyrus[] = "Papyrus";
+bool changeList = false;
 int difficulty = 1;
 // laser::Laser laser = laser::Laser(vec2(50,20), vec2(70,40));
 
@@ -51,30 +52,10 @@ void PrintText(const std::string& text, const C& color, const cinder::ivec2& siz
 
 void MyApp::setup() {
   // Initializes the asteroid list by pushing back asteroids of random heights.
-  for (int i = 0; i < asteroid_number; i++) {
-    int rand_height = rand() % random_height_range + 1;
-    asteroid_list.push_back(asteroid::Asteroid(vec2(asteroid_width + (i * 60),
-        rand_height), asteroid_radius));
-  }
+  PopulateAsteroidList();
   // Initializes the laser list by pushing back lasers of random heights and
   // alternating orientations
-  for (int i = 0; i < laser_number; i++) {
-    int rand_height = rand() % random_height_range + 1;
-    int top_point_x = laser_x_start_point + (i * laser_spacing);
-    int top_point_y = rand_height;
-    int bottom_point_x = laser_y_start_point + (i * laser_spacing);
-    int bottom_point_x_alt = laser_y_start_point + (i * laser_spacing) - 40;
-    int bottom_point_y = rand_height + 20;
-    vec2 bottom_point;
-    // Alternates the orientation of the lasers.
-    if (i % 2 == 0) {
-      bottom_point = vec2(bottom_point_x, bottom_point_y);
-    } else {
-      bottom_point = vec2(bottom_point_x_alt, bottom_point_y);
-    }
-    vec2 top_point = vec2(top_point_x, top_point_y);
-    laser_list.push_back(laser::Laser(top_point, bottom_point));
-  }
+  PopulateLaserList();
   // Loads in audio file.
   cinder::audio::SourceFileRef source_file = cinder::audio::load
       (cinder::app::loadAsset("Travis-Scott-Cant-Say-Instrumental.mp3"));
@@ -86,36 +67,10 @@ void MyApp::setup() {
 void MyApp::update() {
   if (state_ == GameState::kPlaying) {
     if (changeList) {
-      asteroid_counter++;
-      laser_counter++;
       asteroid_list.clear();
-      for (int i = 0; i < 14; i++) {
-        int x = 40 + (i * 60);
-        int radius = 20;
-        int rand_height = rand() % 600 + 1;
-        /*
-        if (checkCollision(vec2(x, rand_height), radius)) {
-          rand_height += 50;
-        }*/
-        asteroid_list.push_back(asteroid::Asteroid(vec2(x, rand_height), radius));
-      }
+      PopulateAsteroidList();
       laser_list.clear();
-      for (int i = 0; i < 8; i++) {
-        int rand_height = rand() % 600 + 1;
-        int top_point_x = 50 + (i * 100);
-        int top_point_y = rand_height;
-        int bottom_point_x = 70 + (i * 100);
-        int bottom_point_x_alt = 70 + (i * 100) - 40;
-        int bottom_point_y = rand_height + 20;
-        vec2 bottom_point;
-        if (i % 2 == 0) {
-          bottom_point = vec2(bottom_point_x, bottom_point_y);
-        } else {
-          bottom_point = vec2(bottom_point_x_alt, bottom_point_y);
-        }
-        vec2 top_point = vec2(top_point_x, top_point_y);
-        laser_list.push_back(laser::Laser(top_point, bottom_point));
-      }
+      PopulateLaserList();
       changeList = false;
     }
 
@@ -468,14 +423,42 @@ bool MyApp::checkLaserColision(vec2 top_location, vec2 bottom_location) {
   return false;
 }
 
+void MyApp::PopulateLaserList() {
+  for (int i = 0; i < laser_number; i++) {
+    int rand_height = rand() % random_height_range + 1;
+    int top_point_x = laser_x_start_point + (i * laser_spacing);
+    int top_point_y = rand_height;
+    int bottom_point_x = laser_y_start_point + (i * laser_spacing);
+    int bottom_point_x_alt = laser_y_start_point + (i * laser_spacing) - 40;
+    int bottom_point_y = rand_height + 20;
+    vec2 bottom_point;
+    // Alternates the orientation of the lasers.
+    if (i % 2 == 0) {
+      bottom_point = vec2(bottom_point_x, bottom_point_y);
+    } else {
+      bottom_point = vec2(bottom_point_x_alt, bottom_point_y);
+    }
+    vec2 top_point = vec2(top_point_x, top_point_y);
+    laser_list.push_back(laser::Laser(top_point, bottom_point));
+  }
+}
+
+void MyApp::PopulateAsteroidList() {
+  for (int i = 0; i < asteroid_number; i++) {
+    int rand_height = rand() % random_height_range + 1;
+    asteroid_list.push_back(asteroid::Asteroid(vec2(asteroid_width
+    + (i * asteroid_spacing), rand_height), asteroid_radius));
+  }
+}
+
+
+
 // The code below is derived from:
 // https://www.tutorialspoint.com/Check-if-two-line-segments-intersect
 
 bool MyApp::onLine(Line l1, Point p) {
-  if(p.x <= max(l1.p1.x, l1.p2.x) && p.x <= min(l1.p1.x, l1.p2.x) &&
-     (p.y <= max(l1.p1.y, l1.p2.y) && p.y <= min(l1.p1.y, l1.p2.y)))
-    return true;
-  return false;
+  return p.x <= max(l1.p1.x, l1.p2.x) && p.x <= min(l1.p1.x, l1.p2.x) &&
+         (p.y <= max(l1.p1.y, l1.p2.y) && p.y <= min(l1.p1.y, l1.p2.y));
 }
 
 int MyApp::direction(Point a, Point b, Point c) {
