@@ -24,6 +24,13 @@
 namespace myapp {
 using cinder::Timer;
 
+enum class GameState {
+  kPlaying,
+  kRules,
+  kGameOver,
+  kTitleScreen,
+};
+
 class MyApp : public cinder::app::App {
 struct Point {
   float x, y;
@@ -60,6 +67,7 @@ struct Line {
   int laser_x_start_point = 50;
   int laser_y_start_point = 70;
   int random_height_range = 600;
+  GameState state_;
   cinder::audio::VoiceRef mVoice;
   int calculate_score(int elapsed_seconds, int difficulty);
   bool checkLaserColision(vec2 top_location, vec2 bottom_location);

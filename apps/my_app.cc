@@ -15,11 +15,6 @@ using cinder::app::KeyEvent;
 using namespace ci;
 using namespace std;
 const char kDbPath[] = "leaderboard.db";
-bool gameOver = false;
-bool gameStart = false;
-bool changeList = false;
-bool showRules = false;
-bool showHomeScreen = false;
 const char kNormalFont[] = "Impact";
 const char timesFont[] = "Times";
 const char papyrus[] = "Papyrus";
@@ -30,7 +25,8 @@ DECLARE_string(name);
 
 MyApp::MyApp() :
 leaderboard_{cinder::app::getAssetPath(kDbPath).string()},
-player_name_{FLAGS_name}
+player_name_{FLAGS_name},
+state_{GameState::kTitleScreen}
 {}
 template <typename C>
 void PrintText(const std::string& text, const C& color, const cinder::ivec2& size,
@@ -88,7 +84,7 @@ void MyApp::setup() {
 }
 
 void MyApp::update() {
-  if (gameStart && !(gameOver)) {
+  if (state_ == GameState::kPlaying) {
     if (changeList) {
       asteroid_counter++;
       laser_counter++;
@@ -142,8 +138,7 @@ void MyApp::update() {
         score = calculate_score((int) timer.getSeconds(), difficulty);
         leaderboard_.AddNameAndScoreToLeaderBoard(player_name_, score);
         timer.stop();
-        gameOver = true;
-        gameStart = false;
+        state_ = GameState::kGameOver;
       }
     }
 
@@ -170,8 +165,7 @@ void MyApp::update() {
         score = calculate_score((int) timer.getSeconds(), difficulty);
         leaderboard_.AddNameAndScoreToLeaderBoard(player_name_, score);
         timer.stop();
-        gameOver = true;
-        gameStart = false;
+        state_ = GameState::kGameOver;
       }
     }
   }
@@ -179,7 +173,7 @@ void MyApp::update() {
 
 void MyApp::draw() {
 
-  if ((showHomeScreen) || (!(gameStart) && !(gameOver))) {
+  if (state_ == GameState::kTitleScreen) {
     myImage = gl::Texture2d::create(loadImage(loadAsset("starbackground.jpg")));
     gl::clear();
     gl::draw(myImage, getWindowBounds());
@@ -223,7 +217,7 @@ void MyApp::draw() {
 
   }
 
-  if (showRules) {
+  if (state_ == GameState::kRules) {
     gl::clear();
     gl::draw(myImage, getWindowBounds());
     gl::Texture2dRef scroll  = gl::Texture2d::create(loadImage(cinder::app::loadAsset("scroll.png")));
@@ -274,7 +268,7 @@ void MyApp::draw() {
   }
 
 
-  if (gameOver && !(gameStart)) {
+  if (state_ == GameState::kGameOver) {
     gl::clear();
     mVoice->stop();
     gl::disableDepthRead();
@@ -329,7 +323,7 @@ void MyApp::draw() {
 
 
 
-  if (gameStart && !(gameOver)) {
+  if (state_ == GameState::kPlaying) {
     gl::clear();
     mVoice->start();
     gl::disableDepthRead();
@@ -379,7 +373,7 @@ void MyApp::keyDown(KeyEvent event) {
     ship.SetLocation(vec2(ship.GetLocation().x, ship.GetLocation().y - 8));
   }
   if (event.getCode() == KeyEvent::KEY_SPACE) {
-    gameStart = true;
+    state_ = GameState::kPlaying;
     timer.start();
   }
 
@@ -393,10 +387,7 @@ void MyApp::keyDown(KeyEvent event) {
     difficulty = 5;
   }
   if (event.getChar() == 'r') {
-    showRules = true;
-  }
-  if (event.getChar() == 'b') {
-    showHomeScreen = true;
+    state_ = GameState::kRules;
   }
 }
 
