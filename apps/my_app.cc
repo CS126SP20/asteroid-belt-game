@@ -22,6 +22,7 @@ bool showRules = false;
 bool showHomeScreen = false;
 const char kNormalFont[] = "Impact";
 const char timesFont[] = "Times";
+const char papyrus[] = "Papyrus";
 int difficulty = 1;
 // laser::Laser laser = laser::Laser(vec2(50,20), vec2(70,40));
 
@@ -38,7 +39,7 @@ void PrintText(const std::string& text, const C& color, const cinder::ivec2& siz
 
   auto box = TextBox()
       .alignment(TextBox::CENTER)
-      .font(cinder::Font(kNormalFont, 40))
+      .font(cinder::Font(papyrus, 40))
       .size(size)
       .color(color)
       .backgroundColor(ColorA(0, 0, 0, 0))
@@ -189,7 +190,7 @@ void MyApp::draw() {
     gl::Texture2dRef asteroid = gl::Texture2d::create(loadImage(cinder::app::loadAsset("asteroid3.png")));
     auto box = TextBox()
         .alignment(TextBox::CENTER)
-        .font(cinder::Font(kNormalFont, 30))
+        .font(cinder::Font(papyrus, 30))
         .size(size)
         .color(color)
         .backgroundColor(ColorA(0, 0, 0, 0))
@@ -205,7 +206,7 @@ void MyApp::draw() {
 
     auto boxy = TextBox()
         .alignment(TextBox::CENTER)
-        .font(cinder::Font(kNormalFont, 15))
+        .font(cinder::Font(papyrus, 15))
         .size(size)
         .color(color)
         .backgroundColor(ColorA(0, 0, 0, 0))
@@ -221,37 +222,41 @@ void MyApp::draw() {
   if (showRules) {
     gl::clear();
     gl::draw(myImage, getWindowBounds());
+    gl::Texture2dRef scroll  = gl::Texture2d::create(loadImage(cinder::app::loadAsset("scroll.png")));
+    gl::draw(scroll, vec2(90, 100));
     auto boxy = TextBox()
         .alignment(TextBox::CENTER)
-        .font(cinder::Font(timesFont, 40))
+        .font(cinder::Font(papyrus, 40))
         .size({600, 50})
-        .color(Color::white())
+        .color(Color::black())
         .backgroundColor(ColorA(0, 0, 0, 0))
         .text("Rules:");
     const auto box_sizes = boxy.getSize();
     const auto surfaces = boxy.render();
     const auto textures = cinder::gl::Texture::create(surfaces);
-    cinder::gl::draw(textures, vec2(100, 100));
+    cinder::gl::draw(textures, vec2(100, 215));
 
     auto box = TextBox()
         .alignment(TextBox::CENTER)
-        .font(cinder::Font(timesFont, 20))
-        .size({600, 100})
-        .color(Color::white())
+        .font(cinder::Font(papyrus, 20))
+        .size({600, 300})
+        .color(Color::black())
         .backgroundColor(ColorA(0, 0, 0, 0))
         .text("- 'W,A,S,D' to move \n"
               "\n"
-              "- 'E, M, or H to toggle between the easy, medium, or hard difficulties \n"
+              "- 'E, M, or H to toggle between the \n "
+              "easy, medium, or hard difficulties \n "
               "\n"
-              "- Avoid the asteroids to survive and higher your score");
+              "- Avoid the asteroids to survive \n "
+              "and higher your score");
     const auto box_size = box.getSize();
     const auto surface = box.render();
     const auto texture = cinder::gl::Texture::create(surface);
-    cinder::gl::draw(texture, vec2(100, 300));
+    cinder::gl::draw(texture, vec2(80, 300));
 
     auto box1 = TextBox()
         .alignment(TextBox::CENTER)
-        .font(cinder::Font(timesFont, 20))
+        .font(cinder::Font(papyrus, 30))
         .size({600, 50})
         .color(Color::white())
         .backgroundColor(ColorA(0, 0, 0, 0))
@@ -259,7 +264,7 @@ void MyApp::draw() {
     const auto box_size1 = box1.getSize();
     const auto surface1 = box1.render();
     const auto texture1 = cinder::gl::Texture::create(surface1);
-    cinder::gl::draw(texture1, vec2(100, 700));
+    cinder::gl::draw(texture1, vec2(100, 720));
 
 
   }
@@ -272,14 +277,35 @@ void MyApp::draw() {
     gl::enableAlphaBlending();
     gl::color(Color::white());
     gl::draw(myImage, getWindowBounds());
-    const cinder::ivec2 size = {500, 50};
-    vec2 loc = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
-    const Color color = Color::white();
-    //PrintText("You Lost!", color, size, loc);
-    std::string text = "Highest Score: " + std::to_string(leaderboard_.highest_score());
-    PrintText(text, color, size, vec2(getWindowWidth() / 2, 300));
+
     gl::Texture2dRef gameoverscreen  = gl::Texture2d::create(loadImage(cinder::app::loadAsset("gameoverscreenv2.png")));
     gl::draw(gameoverscreen, vec2(150, 50));
+
+    auto box1 = TextBox()
+        .alignment(TextBox::CENTER)
+        .font(cinder::Font(papyrus, 50))
+        .size({600, 50})
+        .color(Color::white())
+        .backgroundColor(ColorA(0, 0, 0, 0))
+        .text("Game Stats!");
+    const auto box_size1 = box1.getSize();
+    const auto surface1 = box1.render();
+    const auto texture1 = cinder::gl::Texture::create(surface1);
+    cinder::gl::draw(texture1, vec2(110, 300));
+
+    auto boxy = TextBox()
+        .alignment(TextBox::CENTER)
+        .font(cinder::Font(papyrus, 40))
+        .size({600, 50})
+        .color(Color::white())
+        .backgroundColor(ColorA(0, 0, 0, 0))
+        .text("Highest Score: " + std::to_string(leaderboard_.highest_score()));
+    const auto box_sizes = boxy.getSize();
+    const auto surfaces = boxy.render();
+    const auto textures = cinder::gl::Texture::create(surfaces);
+    cinder::gl::draw(textures, vec2(110, 400));
+    DisplayText(papyrus, 600, 100, 40, Color::white(), "sup bro", vec2(110, 500));
+
   }
 
 
@@ -390,6 +416,20 @@ int MyApp::highest_asteroid(std::list<asteroid::Asteroid> asteroids) {
 
 int MyApp::calculate_score(int elapsed_seconds, int difficulty) {
   return elapsed_seconds * 1.5 * difficulty;
+}
+
+void MyApp::DisplayText(const char font[], int textbox_width, int textbox_height,
+                 int font_size, ColorA color, std::string text, vec2 location) {
+  auto textbox = TextBox()
+      .alignment(TextBox::CENTER)
+      .font(cinder::Font(font, font_size))
+      .size({textbox_width, textbox_height})
+      .color(color)
+      .backgroundColor(ColorA(0, 0, 0, 0))
+      .text(text);
+  const auto surface = textbox.render();
+  const auto texture = cinder::gl::Texture::create(surface);
+  cinder::gl::draw(texture, location);
 }
 
 

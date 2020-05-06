@@ -56,6 +56,8 @@ struct Line {
   bool linesIntersect(Line l1, Line l2);
   bool onLine(Line one, Point p);
   int direction(Point a, Point b, Point c);
+  void DisplayText(const char font[], int textbox_width, int textbox_height,
+      int font_size, ColorA color, std::string text, vec2 location);
 };
 
 }  // namespace myapp
