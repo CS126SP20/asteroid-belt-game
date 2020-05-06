@@ -52,6 +52,14 @@ struct Line {
   int score = 1;
   int asteroid_counter = 0;
   int laser_counter = 0;
+  int asteroid_width = 40;
+  int asteroid_radius = 20;
+  int laser_spacing = 100;
+  int asteroid_number = 14;
+  int laser_number = 8;
+  int laser_x_start_point = 50;
+  int laser_y_start_point = 70;
+  int random_height_range = 600;
   cinder::audio::VoiceRef mVoice;
   int calculate_score(int elapsed_seconds, int difficulty);
   bool checkLaserColision(vec2 top_location, vec2 bottom_location);

@@ -54,26 +54,23 @@ void PrintText(const std::string& text, const C& color, const cinder::ivec2& siz
 
 
 void MyApp::setup() {
-  for (int i = 0; i < 14; i++) {
-
-    int x = 40;
-    int y = 20;
-    int radius = 20;
-    int rand_height = rand() % 600 + 1;
-    asteroid_list.push_back(asteroid::Asteroid(vec2(x + (i * 60), rand_height), radius));
-    ship.SetLocation(ship_start_location);
-    Url url = Url("https://www.1001fonts.com/cursive-fonts.html", false);
-    // DataSourceRef dataSource = DataSource("assets/Precious.ttf", url);
-    // Font cursive = Font(fontcurs, 10);
+  // Initializes the asteroid list by pushing back asteroids of random heights.
+  for (int i = 0; i < asteroid_number; i++) {
+    int rand_height = rand() % random_height_range + 1;
+    asteroid_list.push_back(asteroid::Asteroid(vec2(asteroid_width + (i * 60),
+        rand_height), asteroid_radius));
   }
-  for (int i = 0; i < 8; i++) {
-    int rand_height = rand() % 600 + 1;
-    int top_point_x = 50 + (i * 100);
+  // Initializes the laser list by pushing back lasers of random heights and
+  // alternating orientations
+  for (int i = 0; i < laser_number; i++) {
+    int rand_height = rand() % random_height_range + 1;
+    int top_point_x = laser_x_start_point + (i * laser_spacing);
     int top_point_y = rand_height;
-    int bottom_point_x = 70 + (i * 100);
-    int bottom_point_x_alt = 70 + (i * 100) - 40;
+    int bottom_point_x = laser_y_start_point + (i * laser_spacing);
+    int bottom_point_x_alt = laser_y_start_point + (i * laser_spacing) - 40;
     int bottom_point_y = rand_height + 20;
     vec2 bottom_point;
+    // Alternates the orientation of the lasers.
     if (i % 2 == 0) {
       bottom_point = vec2(bottom_point_x, bottom_point_y);
     } else {
@@ -82,10 +79,11 @@ void MyApp::setup() {
     vec2 top_point = vec2(top_point_x, top_point_y);
     laser_list.push_back(laser::Laser(top_point, bottom_point));
   }
+  // Loads in audio file.
   cinder::audio::SourceFileRef source_file = cinder::audio::load
       (cinder::app::loadAsset("Travis-Scott-Cant-Say-Instrumental.mp3"));
   mVoice = cinder::audio::Voice::create(source_file);
-
+  ship.SetLocation(ship_start_location);
 
 }
 

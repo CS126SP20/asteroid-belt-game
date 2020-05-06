@@ -24,9 +24,6 @@ class Asteroid {
   vec2 getLocation() {
     return location;
   }
-  int GetRadius() {
-    return radius;
-  }
   gl::Texture2dRef GetImage() {
     return asteroidImage;
   }
