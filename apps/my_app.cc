@@ -5,9 +5,9 @@
 #include <cinder/app/App.h>
 #include <gflags/gflags_declare.h>
 
-
-
 #include <iostream>
+
+#include "../src/Laser.h"
 namespace myapp {
 
 
@@ -22,6 +22,7 @@ bool showHomeScreen = false;
 const char kNormalFont[] = "Impact";
 const char timesFont[] = "Times";
 int difficulty = 1;
+// laser::Laser laser = laser::Laser(vec2(50,20), vec2(70,40));
 
 DECLARE_string(name);
 
@@ -63,6 +64,22 @@ void MyApp::setup() {
 
     // Font cursive = Font(fontcurs, 10);
   }
+  for (int i = 0; i < 8; i++) {
+    int rand_height = rand() % 600 + 1;
+    int top_point_x = 50 + (i * 100);
+    int top_point_y = rand_height;
+    int bottom_point_x = 70 + (i * 100);
+    int bottom_point_x_alt = 70 + (i * 100) - 40;
+    int bottom_point_y = rand_height + 20;
+    vec2 bottom_point;
+    if (i % 2 == 0) {
+      bottom_point = vec2(bottom_point_x, bottom_point_y);
+    } else {
+      bottom_point = vec2(bottom_point_x_alt, bottom_point_y);
+    }
+    vec2 top_point = vec2(top_point_x, top_point_y);
+    laser_list.push_back(laser::Laser(top_point, bottom_point));
+  }
 
 }
 
@@ -80,11 +97,17 @@ void MyApp::update() {
         }*/
         asteroid_list.push_back(asteroid::Asteroid(vec2(x, rand_height), radius));
       }
+
+
+
+
       changeList = false;
     }
     if (highest_asteroid(asteroid_list) == 800) {
       changeList = true;
     }
+
+    // laser.update(vec2(laser.GetTopPoint().x + 4, laser.GetTopPoint().y + 4), vec2(laser.GetBottomPoint().x + 4, laser.GetBottomPoint().y + 4));
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
       vec2 center = vec2(getWindowWidth() / 2, getWindowHeight() / 2);
       gl::clear();
@@ -100,6 +123,25 @@ void MyApp::update() {
         gameOver = true;
         gameStart = false;
       }
+    }
+
+    for (std::list<laser::Laser>::iterator p = laser_list.begin(); p != laser_list.end(); ++p) {
+      int updated_top_point_x;
+      int updated_top_point_y;
+      int updated_bottom_point_x;
+      int updated_bottom_point_y;
+      if (p->GetTopPoint().x > p->GetBottomPoint().x) {
+        updated_top_point_x = p->GetTopPoint().x - difficulty;
+        updated_top_point_y = p->GetTopPoint().y + difficulty;
+        updated_bottom_point_x = p->GetBottomPoint().x - difficulty;
+        updated_bottom_point_y = p->GetBottomPoint().y + difficulty;
+      } else {
+        updated_top_point_x = p->GetTopPoint().x + difficulty;
+        updated_top_point_y = p->GetTopPoint().y + difficulty;
+        updated_bottom_point_x = p->GetBottomPoint().x + difficulty;
+        updated_bottom_point_y = p->GetBottomPoint().y + difficulty;
+      }
+      p->update(vec2(updated_top_point_x, updated_top_point_y), vec2(updated_bottom_point_x, updated_bottom_point_y));
     }
   }
 }
@@ -213,6 +255,9 @@ void MyApp::draw() {
     gl::Texture2dRef gameoverscreen  = gl::Texture2d::create(loadImage(cinder::app::loadAsset("gameoverscreenv2.png")));
     gl::draw(gameoverscreen, vec2(150, 50));
   }
+
+
+
   if (gameStart && !(gameOver)) {
     gl::clear();
     gl::disableDepthRead();
@@ -220,13 +265,17 @@ void MyApp::draw() {
     gl::enableAlphaBlending();
     gl::color(Color::white());
     gl::draw(myImage, getWindowBounds());
+    // laser.draw();
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
+      p->draw();
+    }
+    for (std::list<laser::Laser>::iterator p = laser_list.begin(); p != laser_list.end(); ++p) {
       p->draw();
     }
     ship.draw();
 
-    std::string elapsed_timer = std::to_string((int) getElapsedSeconds());
-    std::string score = std::to_string(calculate_score(getElapsedSeconds(), difficulty));
+    std::string elapsed_timer = std::to_string((int) timer.getSeconds());
+    std::string score = std::to_string(calculate_score(timer.getSeconds() , difficulty));
     auto boxy = TextBox()
         .alignment(TextBox::CENTER)
         .font(cinder::Font(timesFont, 20))
@@ -238,7 +287,7 @@ void MyApp::draw() {
     const auto box_sizes = boxy.getSize();
     const auto surfaces = boxy.render();
     const auto textures = cinder::gl::Texture::create(surfaces);
-    cinder::gl::draw(textures, vec2(400, 50));
+    cinder::gl::draw(textures, vec2(400, 30));
 
   }
 }
