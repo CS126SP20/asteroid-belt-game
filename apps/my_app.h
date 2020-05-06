@@ -6,12 +6,13 @@
 #include <cinder/Font.h>
 #include <cinder/Text.h>
 #include <cinder/app/App.h>
+#include <cinder/audio/audio.h>
 #include <cinder/gl/draw.h>
 #include <cinder/gl/gl.h>
-#include <cinder/audio/audio.h>
+
 #include <chrono>
 #include <list>
-#include <cinder/audio/audio.h>
+
 #include "../src/Asteroid.h"
 #include "../src/Laser.h"
 #include "../src/Leaderboard.h"
@@ -20,6 +21,7 @@
 #include "cinder/ImageIo.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/gl/TextureFont.h"
+#include "../src/Utilities.h"
 
 namespace myapp {
 using cinder::Timer;
@@ -49,6 +51,7 @@ struct Line {
   std::list<asteroid::Asteroid> asteroid_list;
   std::list<laser::Laser> laser_list;
   ship::Ship ship;
+  utilities::Utilities utilities;
   leaderboard::LeaderBoard leaderboard_;
   std::string input = "";
   const std::string player_name_;
@@ -69,21 +72,12 @@ struct Line {
   int window_height = 800;
   GameState state_;
   cinder::audio::VoiceRef mVoice;
-  int CalculateScore(int elapsed_seconds, int difficulty);
-  bool CheckLaserColision(vec2 top_location, vec2 bottom_location);
-  // The functions below are derived from:
-  // https://www.tutorialspoint.com/Check-if-two-line-segments-intersect
-  bool LinesIntersect(Line l1, Line l2);
-  int Direction(Point a, Point b, Point c);
+
+  // Methods
   void DisplayText(const char font[], int textbox_width, int textbox_height,
       int font_size, ColorA color, std::string text, vec2 location);
   void PopulateLaserList();
   void PopulateAsteroidList();
-  bool CheckCollision(vec2 loc);
-  int HighestAsteroid(std::list<asteroid::Asteroid> asteroids);
-
-
-
 };
 
 }  // namespace myapp

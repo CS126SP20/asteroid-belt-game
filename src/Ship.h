@@ -4,7 +4,7 @@
 
 #ifndef FINALPROJECT_SHIP_H
 #define FINALPROJECT_SHIP_H
-#include <cinder/app/App.h>
+#include "cinder/app/App.h"
 #include "cinder/gl/gl.h"
 
 using namespace ci;
