@@ -49,6 +49,9 @@ struct Line {
   int highest_asteroid(std::list<asteroid::Asteroid> asteroids);
   gl::Texture2dRef myImage;
   cinder::Timer timer;
+  int score = 1;
+  int asteroid_counter = 0;
+  int laser_counter = 0;
   int calculate_score(int elapsed_seconds, int difficulty);
   bool checkLaserColision(vec2 top_location, vec2 bottom_location);
   // The functions below are derived from:

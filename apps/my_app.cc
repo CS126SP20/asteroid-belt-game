@@ -55,6 +55,7 @@ void PrintText(const std::string& text, const C& color, const cinder::ivec2& siz
 
 void MyApp::setup() {
   for (int i = 0; i < 14; i++) {
+
     int x = 40;
     int y = 20;
     int radius = 20;
@@ -91,6 +92,8 @@ void MyApp::setup() {
 void MyApp::update() {
   if (gameStart && !(gameOver)) {
     if (changeList) {
+      asteroid_counter++;
+      laser_counter++;
       asteroid_list.clear();
       for (int i = 0; i < 14; i++) {
         int x = 40 + (i * 60);
@@ -137,10 +140,10 @@ void MyApp::update() {
 
 
     for (std::list<asteroid::Asteroid>::iterator p = asteroid_list.begin(); p != asteroid_list.end(); ++p) {
-
       if (checkCollision(p->getLocation())) {
+        score = calculate_score((int) timer.getSeconds(), difficulty);
+        leaderboard_.AddNameAndScoreToLeaderBoard(player_name_, score);
         timer.stop();
-        leaderboard_.AddNameAndScoreToLeaderBoard(player_name_, calculate_score((int) timer.getSeconds(), difficulty));
         gameOver = true;
         gameStart = false;
       }
@@ -166,6 +169,9 @@ void MyApp::update() {
     }
     for (std::list<laser::Laser>::iterator p = laser_list.begin(); p != laser_list.end(); ++p) {
       if (checkLaserColision(p->GetTopPoint(), p->GetBottomPoint())) {
+        score = calculate_score((int) timer.getSeconds(), difficulty);
+        leaderboard_.AddNameAndScoreToLeaderBoard(player_name_, score);
+        timer.stop();
         gameOver = true;
         gameStart = false;
       }
@@ -283,11 +289,11 @@ void MyApp::draw() {
 
     auto box1 = TextBox()
         .alignment(TextBox::CENTER)
-        .font(cinder::Font(papyrus, 50))
-        .size({600, 50})
+        .font(cinder::Font(papyrus, 40))
+        .size({600, 100})
         .color(Color::white())
         .backgroundColor(ColorA(0, 0, 0, 0))
-        .text("Game Stats!");
+        .text("Thanks for playing " + player_name_ + "!");
     const auto box_size1 = box1.getSize();
     const auto surface1 = box1.render();
     const auto texture1 = cinder::gl::Texture::create(surface1);
@@ -295,7 +301,7 @@ void MyApp::draw() {
 
     auto boxy = TextBox()
         .alignment(TextBox::CENTER)
-        .font(cinder::Font(papyrus, 40))
+        .font(cinder::Font(papyrus, 20))
         .size({600, 50})
         .color(Color::white())
         .backgroundColor(ColorA(0, 0, 0, 0))
@@ -304,7 +310,21 @@ void MyApp::draw() {
     const auto surfaces = boxy.render();
     const auto textures = cinder::gl::Texture::create(surfaces);
     cinder::gl::draw(textures, vec2(110, 400));
-    DisplayText(papyrus, 600, 100, 40, Color::white(), "sup bro", vec2(110, 500));
+    DisplayText(papyrus, 600, 100, 20, Color::white(), "Your Score: " + std::to_string(score), vec2(110, 450));
+    int elapsed_seconds = score / (difficulty * 1.5);
+    int score_per_minute;
+    if (elapsed_seconds == 0) {
+      score_per_minute = 0;
+    } else {
+      score_per_minute = (60 / elapsed_seconds) * score;
+    }
+
+    DisplayText(papyrus, 600, 100, 20, Color::white(), "Elapsed seconds: " + std::to_string(elapsed_seconds), vec2(110, 500));
+    DisplayText(papyrus, 600, 100, 20, Color::white(), "Score per minute: " + std::to_string(score_per_minute), vec2(110, 550));
+    DisplayText(papyrus, 600, 100, 20, Color::white(), "Asteroids Dodged: " + std::to_string(asteroid_counter * 14 + 7), vec2(110, 600));
+    DisplayText(papyrus, 600, 100, 20, Color::white(), "Lasers Dodged: " + std::to_string(laser_counter * 8 + 4) , vec2(110, 650));
+
+
 
   }
 
@@ -380,26 +400,28 @@ void MyApp::keyDown(KeyEvent event) {
   }
 }
 
+// The check collision method was inspired by :
+// https://stackoverflow.com/questions/31022269/collision-detection-between-two-rectangles-in-java
+
 bool MyApp::checkCollision(vec2 loc) {
 
   // Top left first rectangle
-  int x1 = ship.GetLocation().x;
-  int y1 = ship.GetLocation().y;
+  float x1 = ship.GetLocation().x;
+  float y1 = ship.GetLocation().y;
 
   // Bottom right first rectangle
-  int x2 = ship.GetLocation().x + 20;
-  int y2 = ship.GetLocation().y + 35;
-
-
+  float x2 = ship.GetLocation().x + 20;
+  float y2 = ship.GetLocation().y + 35;
 
 
   // Top left second rectangle
-  int xx1 = loc.x;
-  int yy1 = loc.y;
+  float xx1 = loc.x;
+  float yy1 = loc.y;
 
   // Bottom right second rectangle
-  int xx2 = loc.x + 63;
-  int yy2 = loc.y + 51;
+  float xx2 = loc.x + 63;
+  float yy2 = loc.y + 51;
+
 
   return (x1 < xx2) && (x2 > xx1) && (y1 < yy2) && (y2 > yy1);
 }
