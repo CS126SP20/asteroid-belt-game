@@ -82,9 +82,9 @@ void MyApp::setup() {
     vec2 top_point = vec2(top_point_x, top_point_y);
     laser_list.push_back(laser::Laser(top_point, bottom_point));
   }
-
-
-
+  cinder::audio::SourceFileRef source_file = cinder::audio::load
+      (cinder::app::loadAsset("Travis-Scott-Cant-Say-Instrumental.mp3"));
+  mVoice = cinder::audio::Voice::create(source_file);
 
 
 }
@@ -278,6 +278,7 @@ void MyApp::draw() {
 
   if (gameOver && !(gameStart)) {
     gl::clear();
+    mVoice->stop();
     gl::disableDepthRead();
     gl::disableDepthRead();
     gl::enableAlphaBlending();
@@ -332,6 +333,7 @@ void MyApp::draw() {
 
   if (gameStart && !(gameOver)) {
     gl::clear();
+    mVoice->start();
     gl::disableDepthRead();
     gl::disableDepthRead();
     gl::enableAlphaBlending();

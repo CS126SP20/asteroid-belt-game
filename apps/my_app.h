@@ -8,10 +8,10 @@
 #include <cinder/app/App.h>
 #include <cinder/gl/draw.h>
 #include <cinder/gl/gl.h>
-
+#include <cinder/audio/audio.h>
 #include <chrono>
 #include <list>
-
+#include <cinder/audio/audio.h>
 #include "../src/Asteroid.h"
 #include "../src/Laser.h"
 #include "../src/Leaderboard.h"
@@ -52,6 +52,7 @@ struct Line {
   int score = 1;
   int asteroid_counter = 0;
   int laser_counter = 0;
+  cinder::audio::VoiceRef mVoice;
   int calculate_score(int elapsed_seconds, int difficulty);
   bool checkLaserColision(vec2 top_location, vec2 bottom_location);
   // The functions below are derived from:
