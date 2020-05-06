@@ -25,7 +25,12 @@ namespace myapp {
 using cinder::Timer;
 
 class MyApp : public cinder::app::App {
-
+struct Point {
+  float x, y;
+};
+struct Line {
+  Point p1, p2;
+};
  public:
   MyApp();
   void setup() override;
@@ -45,6 +50,12 @@ class MyApp : public cinder::app::App {
   gl::Texture2dRef myImage;
   cinder::Timer timer;
   int calculate_score(int elapsed_seconds, int difficulty);
+  bool checkLaserColision(vec2 top_location, vec2 bottom_location);
+  // The functions below are derived from:
+  // https://www.tutorialspoint.com/Check-if-two-line-segments-intersect
+  bool linesIntersect(Line l1, Line l2);
+  bool onLine(Line one, Point p);
+  int direction(Point a, Point b, Point c);
 };
 
 }  // namespace myapp
