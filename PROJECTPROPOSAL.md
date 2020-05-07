@@ -16,10 +16,9 @@ Author: [Amish Dara]
   primary obstacle that the user faces are the asteroids and lasers that are 
   thrown at them. They will have to dodge these obstacles. Most of 
   the functionality will be centered around the W, A, S, D, up key, down key, left key, 
-  right key, and space bar. I also intend to use multiple libraries, mostly for image
-   processing and 2D graphics. Some of these libraries include Blend 2D 
-   (https://github.com/blend2d/blend2d), GD Graphics Library (https://github.com/libgd/libgd),
-    and ITK (https://itk.org/). Some stretch goals that I would work on if I finish early would 
+  right key, and space bar. I also intend to use multiple libraries, mostly for creating a database and 
+  parsing through the command line. Some of these libraries include g-flags, sqlite-modern-cpp, and sqlite3. 
+  Some stretch goals that I would work on if I finish early would 
     be to make this game multi-player and add a storyline.
   
   
