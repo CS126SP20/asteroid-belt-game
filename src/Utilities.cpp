@@ -4,10 +4,12 @@
 
 #include "Utilities.h"
 namespace utilities {
+// Calculates game score for the player.
 int Utilities::CalculateScore(int elapsed_seconds, int difficulty) {
   return elapsed_seconds * 1.5 * difficulty;
 }
 
+// Returns the integer height of the highest asteroid on the screen.
 int Utilities::HighestAsteroid(list<asteroid::Asteroid> asteroids) {
   int highest_height = 800;
   for (std::list<asteroid::Asteroid>::iterator p = asteroids.begin(); p != asteroids.end(); ++p) {
@@ -18,6 +20,7 @@ int Utilities::HighestAsteroid(list<asteroid::Asteroid> asteroids) {
   return highest_height;
 }
 
+// Checks whether there is a collision between the laser and the space ship or not.
 bool Utilities::CheckLaserCollision(vec2 top_location, vec2 bottom_location, vec2 ship_location) {
   Line laser_line = {{top_location.x, top_location.y}, {bottom_location.x, bottom_location.y}};
   vec2 loc = ship_location;
@@ -39,7 +42,7 @@ bool Utilities::CheckLaserCollision(vec2 top_location, vec2 bottom_location, vec
   }
   return false;
 }
-// The check asteroid collision method was inspired by :
+// The check asteroid   collision method was inspired by :
 // https://stackoverflow.com/questions/31022269/collision-detection-between-two-rectangles-in-java
 bool Utilities::CheckAsteroidCollision(vec2 loc, vec2 ship_location) {
   // Top left first rectangle
@@ -69,6 +72,7 @@ bool Utilities::LinesIntersect(Line l1, Line l2) {
   int dir4 = Direction(l2.p1, l2.p2, l1.p2);
   return dir1 != dir2 && dir3 != dir4;  // They are intersecting
 }
+// Returns the orientation of the 2 lines.
 int Utilities::Direction(Point a, Point b, Point c){
   float val = (b.y-a.y)*(c.x-b.x)-(b.x-a.x)*(c.y-b.y);
   if (val == 0)
