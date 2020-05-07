@@ -35,5 +35,35 @@
 
   **4/30/20:** 
   - Created a more accurate collision detecting method using rectangles
+  
+  **5/1/20:** 
+   - Updated the positions of the clipart on the home screen 
+   - Created a new rules screen that displays the rules of the game
+     
+  **5/2/20:** 
+   - Updated the positioning of the clipart on the game over screen
+   - Did minor code cleaning (deleting whitespaces and updated certain variable names)
+   
+  **5/3/20:** 
+  - Created the laser class which includes update, draw, and get location methods
+  - Implemented these methods into my_app.cc to display laser animation
+  - Implemented laser collision detecting method
+   
+   **5/4/20:** 
+   - Created a DisplayText method that prints text in one line
+   - Finished updating the game over screen by adding game stats
+   - Added audio to the program that plays when the game starts
+   
+   **5/5/20:** 
+   - Cleaned up all the code in my_app.cc (Removed more than 100 lines of repeated code, updated all variable and method names to meet Google C++ standard)
+   - Replaced boolean game state with the enum class GameState
+   - Created utilities class to modularize code and refactored helper methods
+   
+   **5/6/20:** 
+   - Wrote tests for the helper methods in the Utilities class
+   - Updated the README.md
+   - Added PROPOSAL.md
+
+
 
 
